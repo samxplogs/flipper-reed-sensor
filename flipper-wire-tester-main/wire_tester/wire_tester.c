@@ -18,20 +18,11 @@ static const float BEEP_FREQ = 2400.0f; // louder than other frequencies
 static const float BEEP_VOL = 0.8f;
 static const GpioPin* const INPUT_PIN = &gpio_ext_pb2; // pin 6
 
-//define counter
-static uint32_t green_counter = 0;
-
 
 static void start_feedback(NotificationApp* notifications) {
     // set LED to green
     notification_message_block(notifications, &sequence_set_only_green_255);
 
-
-    //update counter
-green_counter++;
-view_port_update(view_port);  // This will redraw the GUI to show updated counter
-
-    
     // start beep
     if (furi_hal_speaker_acquire(1000)) {
          furi_hal_speaker_start(BEEP_FREQ, BEEP_VOL);
@@ -49,7 +40,6 @@ static void stop_feedback(NotificationApp* notifications) {
     }
 }
 
-//hide original backbround
 /*
 static void draw_callback(Canvas* canvas, void* ctx) {
     furi_assert(ctx);
@@ -57,19 +47,6 @@ static void draw_callback(Canvas* canvas, void* ctx) {
     canvas_draw_icon(canvas, 0, 0, &I_background_128x64);
 }
 */
-
-//modified to implement counter
-static void draw_callback(Canvas* canvas, void* ctx) {
-    furi_assert(ctx);
-    canvas_clear(canvas);
-    canvas_draw_icon(canvas, 0, 0, &I_background_128x64);
-    
-    char buffer[32];
-    snprintf(buffer, sizeof(buffer), "Green Count: %d", green_counter);
-    canvas_draw_str(canvas, 10, 50, buffer);  // Choose appropriate X, Y values
-}
-
-
 
 static void input_callback(InputEvent* input_event, void* ctx) {
     furi_assert(ctx);
